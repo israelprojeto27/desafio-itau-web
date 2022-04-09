@@ -1,62 +1,98 @@
 import Head from 'next/head'
 
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+import { useState } from 'react';
+
 export default function Home() {
+
+  const [input, setInput] = useState('');   
+  const [output, setOutput] = useState('');   
+
+  
+  function handleChange(event, field){
+    if ( field === 'input'){
+      setInput(event.currentTarget.value);
+    } 
+    else if ( field === 'output'){
+      setOutput(event.currentTarget.value);
+    }    
+  }
+
+  
+  const handleSubmit = async () => {
+    console.log('chamando a api');
+
+    setOutput('Aguarde a resposta ...')
+
+    const response = await fetch('https://desafio-itau-api.herokuapp.com/password/validate', {
+      method: 'POST',
+      body: JSON.stringify({ input }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json()
+    console.log('Retorno API: '+  data)
+    setOutput(data.toString())
+  }
+
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Desafio Itau Web</title>
+        <link rel="icon" href="/icon_itau.png" />
       </Head>
 
       <main>
         <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Interface Web para a API Desafio Itau
         </h1>
 
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
+        <br></br> <br></br> <br></br>
 
         <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          Digite um valor aqui e clique em Validar
 
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
+          <Box
+            component="form"
+            sx={{
+              '& .MuiTextField-root': { m: 1, width: '95ch' },
+            }}
+            noValidate
+            autoComplete="off"            
           >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+            
+            <div>
+              <TextField
+                id="outlined-required"
+                label="Input"
+                defaultValue=""
+                value={input}
+                onChange={(e) => handleChange(e, 'input')}
+              />
+            </div>
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            <div>
+              <p>Retorno API: &nbsp; &nbsp; {output} </p>
+            </div>
+
+            <br></br> <br></br>
+
+            <div>
+                <Button variant="contained" fullWidth="true" onClick={handleSubmit}>Validar</Button>
+            </div>
+
+          </Box>
+
+
         </div>
       </main>
 
       <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className="logo" />
-        </a>
+        <p><black>Autor: Israel Barreto</black></p>
       </footer>
 
       <style jsx>{`
